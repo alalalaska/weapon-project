@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1714311665 source:c:\users\nekit\desktop\c++\weapon_project\weapon-project\main.cpp
+	<iostream>
+	<vector>
+	<list>
+	<ctime>
+	<string>
+	"weapon.h"
+
+1714318227 c:\users\nekit\desktop\c++\weapon_project\weapon-project\weapon.h
+	"WeaponPattern.h"
+
+1714316649 c:\users\nekit\desktop\c++\weapon_project\weapon-project\weaponpattern.h
+
