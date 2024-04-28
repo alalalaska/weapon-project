@@ -93,6 +93,7 @@ Weapon *Weapon::Create(WeaponType type)
     return CreateWeapon(type);
 }
 
+//Выводит все хорошее оружие со всеми характеристиками
 void TaskWeaponIsGood(Iterator<WeaponPtr> *it)
 {
     for(it->First(); !it->IsDone(); it->Next())
@@ -101,6 +102,32 @@ void TaskWeaponIsGood(Iterator<WeaponPtr> *it)
         wcout << PrintWeaponType(currentWeapon->GetType()) << L", " << PrintWeaponCaliber(currentWeapon->GetCaliber()) << L", " << PrintWeaponCountry(currentWeapon->GetCountry()) << L", " << (currentWeapon->IsGood() ? L"Хорошее" : L"Плохое") << endl;
     }
 }
+//Стреляем только с хороших 9мм российских пистолетов
+void OnluRussianPistolsShooting(Iterator<WeaponPtr> *it)
+{
+    for(it->First(); !it->IsDone(); it->Next())
+    {
+        const WeaponPtr currentWeapon = it->GetCurrent();
+        wcout << PrintWeaponType(currentWeapon->GetType()) << L", " << PrintWeaponCountry(currentWeapon->GetCountry())
+        << L", " << PrintWeaponCaliber(currentWeapon->GetCaliber()) << L", " <<(currentWeapon->IsGood() ? L"Состояние: Хорошее" : L"Состояние: Плохое") << endl;
+        currentWeapon->Shoot();
+        wcout<<L"\n"<<endl;
+    }
+}
+
+//Чистим только плохое оружие
+void OnluBadWeaponCleaning(Iterator<WeaponPtr> *it)
+{
+    for(it->First(); !it->IsDone(); it->Next())
+    {
+        const WeaponPtr currentWeapon = it->GetCurrent();
+        wcout << PrintWeaponType(currentWeapon->GetType()) << L", " << PrintWeaponCountry(currentWeapon->GetCountry())
+        << L", " << PrintWeaponCaliber(currentWeapon->GetCaliber()) << L", " <<(currentWeapon->IsGood() ? L"Состояние: Хорошее" : L"Состояние: Плохое") << endl;
+        currentWeapon->Cleaning();
+        wcout<<L"\n"<<endl;
+    }
+}
+
 
 int main()
 {
@@ -108,7 +135,7 @@ int main()
     wcout<<L"Стрелковое оружие"<<endl;
     srand(time(0));
 
-    int boxSize = rand() % 299 + 1;
+    int boxSize = rand() % 599 + 1;
 
     WeaponContainer weaponBox(boxSize);
     MegaWeaponContainer megaWeaponBox;
@@ -118,11 +145,20 @@ int main()
         weaponBox.AddWeapon(CreateWeapon(static_cast<WeaponType>(rand() % 4)));
     }
 
-    for(int i = 0; i < rand() % 299 + 1; i++)
+    for(int i = 0; i < rand() % 599 + 1; i++)
     {
         megaWeaponBox.AddWeapon(CreateWeapon (static_cast<WeaponType>(rand() % 4)));
     }
 
-    Iterator<WeaponPtr> *it = new WeaponIsGoodDecorator(weaponBox.GetIterator(), true);
-	TaskWeaponIsGood(it);
+    ///Выыодим все хорошее оружие
+    //Iterator<WeaponPtr> *it = new WeaponIsGoodDecorator(weaponBox.GetIterator(), true);
+	//TaskWeaponIsGood(it);
+
+	///Стреляем только с хороших 9мм российских пистолетов
+	//Iterator<WeaponPtr> *it = new WeaponCountryIteratorDecorator(new WeaponIsGoodDecorator(new WeaponCaliberIteratorDecorator(new WeaponTypeIteratorDecorator(weaponBox.GetIterator(), WeaponType::Pistol), WeaponCaliber::Cal_9mm), true), WeaponCountry::Russia);
+	//OnluRussianPistolsShooting(it);
+
+	///Чистим только грязное оружие
+	Iterator<WeaponPtr> *it = new WeaponIsGoodDecorator(weaponBox.GetIterator(), false);
+	OnluBadWeaponCleaning(it);
 };
