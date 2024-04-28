@@ -32,11 +32,19 @@ enum class WeaponCountry: int
     UnknownCountry = -1
 };
 
+enum class WeaponVariety: int
+{
+    Ognestrel = 0,
+    Pnevmatic = 1,
+    UnknownVariety = -1
+};
+
 class Weapon
 {
 protected:
     WeaponCaliber Caliber; // калибр
     WeaponCountry Country; // страна производства
+    WeaponVariety Variety; //разновидность оружия
     //double Weight; // масса оружия
     //double BulletSpeed; //начальная скорость пули
     //int MagazineCapacity; //патронов в магазине
@@ -48,6 +56,7 @@ protected:
 
         Country = WeaponCountry::UnknownCountry;
         Caliber = WeaponCaliber::UnknownCaliber;
+        Variety = WeaponVariety::UnknownVariety;
         //Weight = double (rand() % 3.5);
         //BulletSpeed = double (rand() % 801);
         //MagazineCapacity = int (rand() % 31);
@@ -60,6 +69,7 @@ public:
     //double Speed() const { return BulletSpeed; }
     WeaponCaliber GetCaliber() const { return Caliber; }
     WeaponCountry GetCountry() const { return Country; }
+    WeaponVariety GetVariety() const { return Variety; }
 
     virtual WeaponType GetType() const = 0;
 
@@ -77,7 +87,7 @@ typedef Weapon *WeaponPtr;
 class Pistol : public Weapon
 {
 public:
-    Pistol(WeaponCaliber caliber, WeaponCountry country) : Weapon() { Caliber = caliber; Country = country; }
+    Pistol(WeaponCaliber caliber, WeaponCountry country, WeaponVariety variety) : Weapon() { Caliber = caliber; Country = country; Variety = variety;}
 
     WeaponType GetType() const { return WeaponType::Pistol; }
 
@@ -92,7 +102,7 @@ public:
 class Rifle : public Weapon
 {
 public:
-    Rifle(WeaponCaliber caliber, WeaponCountry country) : Weapon() { Caliber = caliber; Country = country; }
+    Rifle(WeaponCaliber caliber, WeaponCountry country, WeaponVariety variety) : Weapon() { Caliber = caliber; Country = country; Variety = variety;}
     WeaponType GetType() const { return WeaponType::Rifle; }
 
     void Shoot() { wcout<< L"Вы выстрелили из винтовки"; }
@@ -106,7 +116,7 @@ public:
 class ShotGun : public Weapon
 {
 public:
-    ShotGun(WeaponCaliber caliber, WeaponCountry country) : Weapon() { Caliber = caliber; Country = country; }
+    ShotGun(WeaponCaliber caliber, WeaponCountry country, WeaponVariety variety) : Weapon() { Caliber = caliber; Country = country; Variety = variety;}
 
     WeaponType GetType() const { return WeaponType::ShotGun; }
 
@@ -121,7 +131,7 @@ public:
 class MachineGun : public Weapon
 {
 public:
-    MachineGun(WeaponCaliber caliber, WeaponCountry country) : Weapon() { Caliber = caliber; Country = country; }
+    MachineGun(WeaponCaliber caliber, WeaponCountry country, WeaponVariety variety) : Weapon() { Caliber = caliber; Country = country; Variety = variety;}
 
     WeaponType GetType() const { return WeaponType::MachineGun; }
 
@@ -286,6 +296,33 @@ public:
         {
             It->Next();
         } while (!It->IsDone() && It->GetCurrent()->GetCaliber() != targetCaliber);
+    }
+};
+
+class WeaponVarietyIteratorDecorator : public IteratorDecorator<WeaponPtr>
+{
+private:
+    WeaponVariety targetVariety;
+
+public:
+    WeaponVarietyIteratorDecorator(Iterator<WeaponPtr> *it, WeaponVariety variaty)
+        : IteratorDecorator(it), targetVariety(variaty) {}
+
+    void First()
+    {
+        It->First();
+        while (!It->IsDone() && It->GetCurrent()->GetVariety() != targetVariety)
+        {
+            It->Next();
+        }
+    }
+
+    void Next()
+    {
+        do
+        {
+            It->Next();
+        } while (!It->IsDone() && It->GetCurrent()->GetVariety() != targetVariety);
     }
 };
 

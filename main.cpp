@@ -76,15 +76,24 @@ wstring PrintWeaponCountry (const WeaponCountry country)
     }
 }
 
+wstring PrintWeaponVariety (const WeaponVariety variety)
+{
+    switch(variety)
+    {
+    case WeaponVariety::Ognestrel: return  L"Разновидность: Огнестрельное";
+    case WeaponVariety::Pnevmatic: return  L"Разновидность: Пневматическое";
+    default: return L"Разновидность: Неизвестна";
+    }
+}
+
 Weapon *CreateWeapon(WeaponType type)
 {
     switch(type)
     {
-        case WeaponType::Pistol: return new Pistol(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 4));
-        case WeaponType::Rifle: return new Rifle(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 4));
-        case WeaponType::ShotGun: return new ShotGun(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 4));
-        case WeaponType::MachineGun: return new MachineGun(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 4));
-        default: return NULL;
+        case WeaponType::Pistol: return new Pistol(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 5), static_cast<WeaponVariety>(rand() % 2));
+        case WeaponType::Rifle: return new Rifle(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 5), static_cast<WeaponVariety>(rand() % 2));
+        case WeaponType::ShotGun: return new ShotGun(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 5), static_cast<WeaponVariety>(rand() % 2));
+        case WeaponType::MachineGun: return new MachineGun(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 5), static_cast<WeaponVariety>(rand() % 2));
     }
 }
 
@@ -115,14 +124,15 @@ void OnluRussianPistolsShooting(Iterator<WeaponPtr> *it)
     }
 }
 
-//Чистим только плохое оружие
+//Чистим только плохое огнестрельное оружие
 void OnluBadWeaponCleaning(Iterator<WeaponPtr> *it)
 {
     for(it->First(); !it->IsDone(); it->Next())
     {
         const WeaponPtr currentWeapon = it->GetCurrent();
         wcout << PrintWeaponType(currentWeapon->GetType()) << L", " << PrintWeaponCountry(currentWeapon->GetCountry())
-        << L", " << PrintWeaponCaliber(currentWeapon->GetCaliber()) << L", " <<(currentWeapon->IsGood() ? L"Состояние: Хорошее" : L"Состояние: Плохое") << endl;
+        << L", " << PrintWeaponCaliber(currentWeapon->GetCaliber()) << L", " <<(currentWeapon->IsGood() ? L"Состояние: Хорошее" : L"Состояние: Плохое")
+        << L", " << PrintWeaponVariety(currentWeapon->GetVariety())<< endl;
         currentWeapon->Cleaning();
         wcout<<L"\n"<<endl;
     }
@@ -159,6 +169,6 @@ int main()
 	//OnluRussianPistolsShooting(it);
 
 	///Чистим только грязное оружие
-	Iterator<WeaponPtr> *it = new WeaponIsGoodDecorator(weaponBox.GetIterator(), false);
+	Iterator<WeaponPtr> *it = new WeaponIsGoodDecorator(new WeaponVarietyIteratorDecorator(weaponBox.GetIterator(), WeaponVariety::Ognestrel), false);
 	OnluBadWeaponCleaning(it);
 };
