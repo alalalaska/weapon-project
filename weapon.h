@@ -45,9 +45,6 @@ protected:
     WeaponCaliber Caliber; // калибр
     WeaponCountry Country; // страна производства
     WeaponVariety Variety; //разновидность оружия
-    //double Weight; // масса оружия
-    //double BulletSpeed; //начальная скорость пули
-    //int MagazineCapacity; //патронов в магазине
     bool WeaponIsGood; //оружие исправно
 
     Weapon()
@@ -57,16 +54,11 @@ protected:
         Country = WeaponCountry::UnknownCountry;
         Caliber = WeaponCaliber::UnknownCaliber;
         Variety = WeaponVariety::UnknownVariety;
-        //Weight = double (rand() % 3.5);
-        //BulletSpeed = double (rand() % 801);
-        //MagazineCapacity = int (rand() % 31);
+
     };
 
 public:
     bool IsGood() const { return WeaponIsGood; }
-    //int MagCap() const { return MagazineCapacity; }
-    //double WeaponWeight() const { return Weight; }
-    //double Speed() const { return BulletSpeed; }
     WeaponCaliber GetCaliber() const { return Caliber; }
     WeaponCountry GetCountry() const { return Country; }
     WeaponVariety GetVariety() const { return Variety; }
@@ -100,7 +92,7 @@ public:
 };
 
 class Rifle : public Weapon
-{
+        {
 public:
     Rifle(WeaponCaliber caliber, WeaponCountry country, WeaponVariety variety) : Weapon() { Caliber = caliber; Country = country; Variety = variety;}
     WeaponType GetType() const { return WeaponType::Rifle; }
@@ -215,7 +207,7 @@ public:
 
 };
 
-///Декораторы для итератора контейнера WeaponContainer
+///Декораторы
 
 class WeaponTypeIteratorDecorator : public IteratorDecorator<WeaponPtr>
 {

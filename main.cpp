@@ -1,5 +1,4 @@
 #include <iostream>
-#include<vector>
 #include<list>
 #include<ctime>
 #include<string>
@@ -86,14 +85,17 @@ wstring PrintWeaponVariety (const WeaponVariety variety)
     }
 }
 
+///Фабричный метод
+
 Weapon *CreateWeapon(WeaponType type)
 {
     switch(type)
     {
-        case WeaponType::Pistol: return new Pistol(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 5), static_cast<WeaponVariety>(rand() % 2));
-        case WeaponType::Rifle: return new Rifle(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 5), static_cast<WeaponVariety>(rand() % 2));
-        case WeaponType::ShotGun: return new ShotGun(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 5), static_cast<WeaponVariety>(rand() % 2));
-        case WeaponType::MachineGun: return new MachineGun(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 5), static_cast<WeaponVariety>(rand() % 2));
+        case WeaponType::Pistol: return new Pistol(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 4), static_cast<WeaponVariety>(rand() % 2));
+        case WeaponType::Rifle: return new Rifle(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 4), static_cast<WeaponVariety>(rand() % 2));
+        case WeaponType::ShotGun: return new ShotGun(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 4), static_cast<WeaponVariety>(rand() % 2));
+        case WeaponType::MachineGun: return new MachineGun(static_cast<WeaponCaliber>(rand() % 5), static_cast<WeaponCountry>(rand() % 4), static_cast<WeaponVariety>(rand() % 2));
+        default: throw std::invalid_argument("Unknown weapon type");
     }
 }
 
@@ -102,7 +104,7 @@ Weapon *Weapon::Create(WeaponType type)
     return CreateWeapon(type);
 }
 
-//Выводит все хорошее оружие со всеми характеристиками
+//Выводим все хорошее оружие со всеми характеристиками
 void TaskWeaponIsGood(Iterator<WeaponPtr> *it)
 {
     for(it->First(); !it->IsDone(); it->Next())
